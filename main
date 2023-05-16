@@ -1,0 +1,20 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Read input from the user
+        System.out.print("Enter a value: ");
+        int value = scanner.nextInt();
+
+        // Process the input
+        int result = value * 2;
+
+        // Display the result
+        System.out.println("Result: " + result);
+
+        // Remember to close the scanner
+        scanner.close();
+    }
+}
