@@ -164,7 +164,8 @@ public class Main {
         System.out.println("There is no block in memory fit "+processId+".");
         // anood and whoever resposible for this method veery important dont foget to check that there is enough memory space if not display an error msg 
         // also when allocating dont forget to set the procId to the partition and internalfragmentsize=partitionSize-process size also set status to "allocated"
-        // display memory after allocation in this format [P6 | H | P9 | P7 ]
+        // display memory after allocation in this format [P6 | H | P9 | P7 ] by method printMemory()
+        printMemory();
         // exeptions : memory is full , process size > partition size , process already allocated
 
     }
@@ -181,6 +182,21 @@ public class Main {
     return false;
 }
 
+private static void printMemory(){
+    String str="";
+    str=str+"[ ";
+    for(int i=0; i<Memory.length; i++ ){
+        if(Memory[i].getStatus()== Status.free)
+        str=str+"H | ";
+        else
+        str=str+Memory[i].getProcId()+" | ";
+}
+int x=str.lastIndexOf('|');
+String str1= str.substring(0,x);
+str1=str1+"]";
+System.out.println("Memory display: ");
+System.out.println(str1);
+}
 
     private static void deallocateMemory() {
 
