@@ -79,6 +79,59 @@ public class Main {
 
     private static void deallocateMemory() {
 
+
+
+
+        boolean isEmpty = true;
+
+          for(int i ; i <Memory.length ; i++){
+          
+          if (Memory[i]!=null){
+        isEmpty=false;
+        break;
+
+          }
+          
+          }
+
+
+          if (isEmpty) {
+            System.out.println("The array is empty.");
+        }
+
+
+        else {
+           
+            System.out.println("Enter the process ID: ");
+            String procId = scanner.nextLine();
+        
+
+
+            for(int i ; i <Memory.length ; i++){
+
+                if(Memory[i]=pid){
+
+                   String status=free ;
+                   
+                    int inFragSize=-1; 
+                     procId=null ;
+
+                     System.out.println("Process ID;"+procId+" Successfully deallocateded");
+
+
+                }
+      
+    
+
+
+            }
+
+
+        }
+        
+         
+
+
         // first loop over memory to check that it is not empty 
         //if not ask user to enter process id 
         // loop to find the desired partittion
