@@ -5,6 +5,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         int PNo ; // number of partitions 
+        String strategy; // F for First Fit, B for Best Fit, W for Worst Fit , CASE INSENSETIE 
         int PSize ; // size of each partition used later in memory creation loop
         int limit=0 ; // to specify end adress and start adress , it is the limit of the previous partition thus the base for the current 
         int lastProcid = 0 ; // whenever user allocates a new process then its id shall be "P"+(++lastProcid) IN ALLOCATE METHOD
@@ -15,7 +16,7 @@ public class Main {
         this.PNo = scanner.nextInt();
 
         // create memory 
-        Partition[] Memory = new Partition[Pno] ;
+        Partition[] Memory = new Partition[this.PNo] ;
 
         // get user input of each partition 
         System.out.print("Now you will enter each partitions size in KB : ");
@@ -25,11 +26,26 @@ public class Main {
             System.out.print("Enter size of partition "+(i+1)+"in KB :");
             PSize=scanner.nextInt();
             int currentbase = limit ; // start adrs
-            int currentLimit=limit+this.PSize-1; // end adrs
+            int currentLimit=limit+this.PSize-1; // end adrs 
             this.Partition[i]= new Partition(this.PSize,currentbase,currentLimit);
-            limit=currentLimit ; 
+            this.limit=currentLimit ; 
 
         }
+
+        // allocation strategy display a menu(only once) asking  user to choose the algorithm then allocate accordingly 
+        while (true) {
+            System.out.print("Please choose an allocation strategy (F for First Fit, B for Best Fit, W for Worst Fit): ");
+            strategy = scanner.nextLine().toUpperCase();
+
+            if (strategy.equalsIgnoreCase("F")) {
+                return "F";
+            } else if (strategy.equalsIgnoreCase("B")) {
+                return "B";
+            } else if (strategy.equalsIgnoreCase("W")) {
+                return "W";
+            } else {
+                System.out.println("Invalid input. Please try again.");
+            }
 
         // Displaying the menu 
         do {
@@ -69,10 +85,10 @@ public class Main {
         int processSize= scanner.nextInt();
         String processId = "P"+(++this.lastProcid)+"";
         
-        // display a menu(only once) asking  user to choose the algorithm then allocate accordingly 
         // anood and whoever resposible for this method veery important dont foget to check that there is enough memory space if not display an error msg 
         // also when allocating dont forget to set the procId to the partition and internalfragmentsize=partitionSize-process size also set status to "allocated"
         // display memory after allocation in this format [P6 | H | P9 | P7 ]
+        // exeptions : memory is full , process size > partition size , 
 
     }
 
@@ -96,35 +112,38 @@ public class Main {
 
 
           if (isEmpty) {
-            System.out.println("The array is empty.");
+            System.out.println("The memory is empty.");
+            break; 
         }
 
+        boolean found = false ; 
 
-        else {
-           
+            while ( !found )   {   
+
             System.out.println("Enter the process ID: ");
             String procId = scanner.nextLine();
         
 
-
             for(int i ; i <Memory.length ; i++){
 
-                if(Memory[i]=pid){
+                if(Memory[i].getProcId=procId){
 
-                   String status=free ;
+                   Memory[i].setStatus=Status.free ;
                    
-                    int inFragSize=-1; 
-                     procId=null ;
+                   Memory[i].setInFragSize=-1; 
+                   Memory[i].setProcId=null ;
 
                      System.out.println("Process ID;"+procId+" Successfully deallocateded");
-
+                    found=true ; 
 
                 }
       
-    
 
 
-            }
+            } // looped over all memory 
+
+            if ( found == false )
+            System.out.println("Process ID :"+procId+" Not found");
 
 
         }
