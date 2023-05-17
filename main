@@ -4,17 +4,113 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        // Read input from the user
-        System.out.print("Enter a value: ");
-        int value = scanner.nextInt();
+        int PNo ; // number of partitions 
+        int PSize ; // size of each partition used later in memory creation loop
+        int limit=0 ; // to specify end adress and start adress , it is the limit of the previous partition thus the base for the current 
+        int lastProcid = 0 ; // whenever user allocates a new process then its id shall be "P"+(++lastProcid) IN ALLOCATE METHOD
 
-        // Process the input
-        int result = value * 2;
+        
+        // Read PNo from the user
+        System.out.print("Enter the number of partitions in the memory: ");
+        this.PNo = scanner.nextInt();
 
-        // Display the result
-        System.out.println("Result: " + result);
+        // create memory 
+        Partition[] Memory = new Partition[Pno] ;
 
-        // Remember to close the scanner
-        scanner.close();
+        // get user input of each partition 
+        System.out.print("Now you will enter each partitions size in KB : ");
+
+        
+        for (int i = 0 ; i<Memory.size ; i++){
+            System.out.print("Enter size of partition "+(i+1)+"in KB :");
+            PSize=scanner.nextInt();
+            int currentbase = limit ; // start adrs
+            int currentLimit=limit+this.PSize-1; // end adrs
+            this.Partition[i]= new Partition(this.PSize,currentbase,currentLimit);
+            limit=currentLimit ; 
+
+        }
+
+        // Displaying the menu 
+        do {
+            System.out.println("----- Memory Manager Menu -----");
+            System.out.println("1. Allocate Memory");
+            System.out.println("2. Deallocate Memory");
+            System.out.println("3. Generate Report and Write to File");
+            System.out.println("4. Exit Program");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    allocateMemory();
+                    break;
+                case 2:
+                    deallocateMemory();
+                    break;
+                case 3:
+                    generateReport();
+                    break;
+                case 4:
+                    System.out.println("Exiting the program...");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+            System.out.println();
+        } while (choice != 4);
+
+        
     }
-}
+
+    private static void allocateMemory() {
+
+        System.out.println("Enter Size of the process to allocate");
+        int processSize= scanner.nextInt();
+        String processId = "P"+(++this.lastProcid)+"";
+        
+        // display a menu(only once) asking  user to choose the algorithm then allocate accordingly 
+        // anood and whoever resposible for this method veery important dont foget to check that there is enough memory space if not display an error msg 
+        // also when allocating dont forget to set the procId to the partition and internalfragmentsize=partitionSize-process size also set status to "allocated"
+        // display memory after allocation in this format [P6 | H | P9 | P7 ]
+
+    }
+
+
+    private static void deallocateMemory() {
+
+        // first loop over memory to check that it is not empty 
+        //if not ask user to enter process id 
+        // loop to find the desired partittion
+        // set the following status=free , inFragSize=-1 , procId=null ;  
+        //display sucess msg
+    }
+
+
+    private static void generateReport() {
+
+        //write into file 
+        try {
+            FileWriter writer = new FileWriter("Report.txt");
+            writer.write("\n");
+            writer.write("\n");
+            writer.write("\n");
+            writer.close();
+            System.out.println("Memory report generated and written to 'Report.txt'.");
+        } catch (IOException e) {
+            System.out.println("Error occurred while writing to the file.");
+        }
+
+        //display on console 
+        System.out.println("-----------------------------------------------------------");
+        System.out.println("Memory Information");
+        for (int i = 0 ; i<Memory.size ; i++){
+            System.out.println("partition"+(i++)+""); 
+
+            System.out.println(partition.toString());
+            System.out.println("-----------------------------------------------------------");
+
+        }
+
+    }// end main
+} 

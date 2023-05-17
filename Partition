@@ -1,0 +1,79 @@
+public class Partition {
+    private int partitionSize;
+    private int startAdr;
+    private int endAdr;
+    private int inFragSize; // MAKE SURE TO MAKE IT -1 WHEN DEALLOCATIING 
+    private Status status ; 
+    private String procId ; // null initiallu MAKE SURE TO MAKE IT NULL WHEN DEALLOCATIING 
+
+    public Partition(int partitionSize, int startAdr, int endAdr,) { // (ui,global limit in main,counterInMain+size-1) 
+        this.partitionSize = partitionSize;
+        this.startAdr = startAdr;
+        this.endAdr = endAdr;
+        this.inFragSize = -1; // initially since partition intitallt is free ,MAKE SURE TO MAKE IT -1 WHEN DEALLOCATIING 
+        this.status=Status.free ; // initially free 
+        this.procId = null ; //MAKE SURE TO MAKE IT NULL WHEN DEALLOCATIING
+    }
+
+    // Getters and setters for the attributes
+
+    public int getPartitionSize() {
+        return partitionSize;
+    }
+
+    public void setPartitionSize(int partitionSize) {
+        this.partitionSize = partitionSize;
+    }
+
+    public int getStartAdr() {
+        return startAdr;
+    }
+
+    public void setStartAdr(int startAdr) {
+        this.startAdr = startAdr;
+    }
+
+    public int getEndAdr() {
+        return endAdr;
+    }
+
+    public void setEndAdr(int endAdr) {
+        this.endAdr = endAdr;
+    }
+
+    public int getInFragSize() {
+        return inFragSize;
+    }
+
+    public void setInFragSize(int inFragSize) {
+        this.inFragSize = inFragSize;
+    }
+    public int getStatus() {
+        return inFragSize;
+    }
+
+    public void setStatus(int inFragSize) {
+        this.inFragSize = inFragSize;
+    }
+
+    public String getProcId() {
+        return procId;
+    }
+
+    public void setProcId(String procId) {
+        this.procId = procId;
+    }
+
+    @Override
+    public String toString() {
+        return "Partition{" +
+                "partitionSize=" + partitionSize +
+                ", startAdr=" + startAdr +
+                ", endAdr=" + endAdr +
+                ", inFragSize=" + inFragSize +
+                ", status=" + status +
+                ", procId='" + procId + '\'' +
+                '}';
+    }
+
+}
