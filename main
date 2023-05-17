@@ -5,10 +5,11 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         int PNo ; // number of partitions 
-        String strategy; // F for First Fit, B for Best Fit, W for Worst Fit , CASE INSENSETIE 
+        char strategy; // F for First Fit, B for Best Fit, W for Worst Fit , CASE INSENSETIE 
         int PSize ; // size of each partition used later in memory creation loop
         int limit=0 ; // to specify end adress and start adress , it is the limit of the previous partition thus the base for the current 
         int lastProcid = 0 ; // whenever user allocates a new process then its id shall be "P"+(++lastProcid) IN ALLOCATE METHOD
+       
 
         
         // Read PNo from the user
@@ -81,16 +82,104 @@ public class Main {
 
     private static void allocateMemory() {
 
+       if(ISfull())
+       return;
+
         System.out.println("Enter Size of the process to allocate");
         int processSize= scanner.nextInt();
         String processId = "P"+(++this.lastProcid)+"";
+
+        int bestLOC=-1;
+        int worstLOC=-1;
+        int sizeBEST=-1;
+        int sizeWORST=-1;
+
+        boolean noFIT=true; // To check if there is block where process size < partition size
+
+        switch (strategy) {
+            case 'F': //firstfit
+               for(int i=0; i<Memory.length; i++ )
+                if(Memory[i].getStatus()== Status.free && Memory[i].getPartitionSize()>= processSize){
+                    Memory[i].setInFragSize((Memory[i].getPartitionSize()-processSize));
+                    Memory[i].setStatus(Status.allocated);
+                    Memory[i].setProcId(processId);
+                    noFIT=false;
+                    break;
+                }
+                break;
+
+            case 'B'://bestfit
+            for(int i=0; i<Memory.length; i++ )
+                if(Memory[i].getStatus()== Status.free && Memory[i].getPartitionSize()>= processSize){
+
+                    if(bestLOC<0){ //first block fit
+                        bestLOC= i;
+                        sizeBEST= Memory[i].getPartitionSize();
+                    }
+
+                    if(bestLOC >=0 && Memory[i].getPartitionSize()<sizeBEST){
+                        bestLOC= i;
+                        sizeBEST= Memory[i].getPartitionSize();
+                    }
+                }
+
+               // allocate
+               if(bestLOC >=0){// memory not full
+               Memory[bestLOC].setInFragSize((Memory[bestLOC].getPartitionSize()-processSize));
+               Memory[bestLOC].setStatus(Status.allocated);
+               Memory[bestLOC].setProcId(processId);
+               noFIT=false;
+               }
+                break;
+
+            case 'W': //worstfit
+            for(int i=0; i<Memory.length; i++ )
+                if(Memory[i].getStatus()== Status.free && Memory[i].getPartitionSize()>= processSize){
+
+                    if(worstLOC<0){ //first block fit
+                        worstLOC= i;
+                        sizeWORST= Memory[i].getPartitionSize();
+                    }
+
+                    if(worstLOC >=0 && Memory[i].getPartitionSize()>sizeWORST){
+                        worstLOC= i;
+                        sizeWORST= Memory[i].getPartitionSize();
+                    }
+                }
+
+               // allocate
+               if(worstLOC >=0){
+               Memory[worstLOC].setInFragSize((Memory[worstLOC].getPartitionSize()-processSize));
+               Memory[worstLOC].setStatus(Status.allocated);
+               Memory[worstLOC].setProcId(processId);
+               noFIT=false;
+            }
+            break;
+
+            default:
+                System.out.println("There is no strategy chosen.");
+        }
         
+        if(noFIT)
+        System.out.println("There is no block in memory fit "+processId+".");
         // anood and whoever resposible for this method veery important dont foget to check that there is enough memory space if not display an error msg 
         // also when allocating dont forget to set the procId to the partition and internalfragmentsize=partitionSize-process size also set status to "allocated"
         // display memory after allocation in this format [P6 | H | P9 | P7 ]
-        // exeptions : memory is full , process size > partition size , 
+        // exeptions : memory is full , process size > partition size , process already allocated
 
     }
+    private static boolean ISfull(){
+        boolean full=true;
+        for(int i=0; i<Memory.length; i++ ){
+        if(Memory[i].getStatus()== Status.free)
+        full=false;
+    }
+    if(full){
+    System.out.println("Memory is full.");
+    return true;}
+    else 
+    return false;
+}
 
 
     private static void deallocateMemory() {

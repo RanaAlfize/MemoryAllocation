@@ -49,11 +49,11 @@ public class Partition {
         this.inFragSize = inFragSize;
     }
     public int getStatus() {
-        return inFragSize;
+        return status;
     }
 
-    public void setStatus(int inFragSize) {
-        this.inFragSize = inFragSize;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public String getProcId() {
