@@ -34,19 +34,18 @@ public class Main {
         }
 
         // allocation strategy display a menu(only once) asking  user to choose the algorithm then allocate accordingly 
-        while (true) {
+        boolean choosen = false ; 
+         while (!choosen) {
             System.out.print("Please choose an allocation strategy (F for First Fit, B for Best Fit, W for Worst Fit): ");
-            strategy = scanner.nextLine().toUpperCase();
+            strategy = scanner.nextLine().toUpperCase().charAt(0);
 
-            if (strategy.equalsIgnoreCase("F")) {
-                return "F";
-            } else if (strategy.equalsIgnoreCase("B")) {
-                return "B";
-            } else if (strategy.equalsIgnoreCase("W")) {
-                return "W";
-            } else {
-                System.out.println("Invalid input. Please try again.");
-            }
+
+            if ( this.strategy=='F' || this.strategy=='W' || this.strategy=='B')
+            choosen = true ; 
+            else
+            System.out.print("Invalid input ");
+
+        } 
 
         // Displaying the menu 
         do {
@@ -89,10 +88,11 @@ public class Main {
         int processSize= scanner.nextInt();
         String processId = "P"+(++this.lastProcid)+"";
 
+        
         int bestLOC=-1;
         int worstLOC=-1;
-        int sizeBEST=-1;
-        int sizeWORST=-1;
+        int sizeBEST=-1; //min
+        int sizeWORST=-1; //max
 
         boolean noFIT=true; // To check if there is block where process size < partition size
 
