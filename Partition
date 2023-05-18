@@ -2,17 +2,17 @@ public class Partition {
     private int partitionSize;
     private int startAdr;
     private int endAdr;
-    private int inFragSize; // MAKE SURE TO MAKE IT -1 WHEN DEALLOCATIING 
-    private Status status ; 
-    private String procId ; // null initiallu MAKE SURE TO MAKE IT NULL WHEN DEALLOCATIING 
+    private int inFragSize;
+    private Status status;
+    private String procId;
 
-    public Partition(int partitionSize, int startAdr, int endAdr,) { // (ui,global limit in main,counterInMain+size-1) 
+    public Partition(int partitionSize, int startAdr, int endAdr) {
         this.partitionSize = partitionSize;
         this.startAdr = startAdr;
         this.endAdr = endAdr;
-        this.inFragSize = -1; // initially since partition intitallt is free ,MAKE SURE TO MAKE IT -1 WHEN DEALLOCATIING 
-        this.status=Status.free ; // initially free 
-        this.procId = null ; //MAKE SURE TO MAKE IT NULL WHEN DEALLOCATIING
+        this.inFragSize = -1;
+        this.status = Status.free;
+        this.procId = null;
     }
 
     // Getters and setters for the attributes
@@ -48,7 +48,8 @@ public class Partition {
     public void setInFragSize(int inFragSize) {
         this.inFragSize = inFragSize;
     }
-    public int getStatus() {
+
+    public Status getStatus() {
         return status;
     }
 
@@ -76,4 +77,6 @@ public class Partition {
                 '}';
     }
 
+
 }
+

@@ -1,0 +1,363 @@
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+import java.util.InputMismatchException;
+
+
+public class ProjectCCS77 {
+  
+        static int lastProcid = 0 ; // whenever user allocates a new process then its id shall be "P"+(++lastProcid) IN ALLOCATE METHOD
+        static char strategy; // F for First Fit, B for Best Fit, W for Worst Fit , CASE INSENSETIE 
+        static Partition[] Memory ; 
+        static int choice ; // whenever user allocates a new process then its id shall be "P"+(++lastProcid) IN ALLOCATE METHOD
+
+    
+    //==========================================================main
+    
+     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        int PNo ; // number of partitions 
+        int PSize ; // size of each partition used later in memory creation loop
+        int limit=0 ; // to specify end adress and start adress , it is the limit of the previous partition thus the base for the current 
+       
+
+        
+        // Read PNo from the user
+        System.out.println("Enter the number of partitions in the memory: ");
+        PNo = scanner.nextInt();
+
+        // create memory 
+        Memory = new Partition[PNo] ;
+
+        // get user input of each partition 
+        System.out.println("Now you will enter each partitions size in KB : ");
+
+        System.out.println("Enter size of partition "+(1)+"in KB :");
+            PSize=scanner.nextInt();
+            int currentbase = limit ; // start adrs
+            int currentLimit=limit+PSize-1; // end adrs 
+            Memory[0]= new Partition(PSize,currentbase,currentLimit);
+            limit=currentLimit ; 
+            
+        for (int i = 1 ; i<Memory.length ; i++){
+            System.out.println("Enter size of partition "+(i+1)+"in KB :");
+            PSize=scanner.nextInt();
+            currentbase = limit ; // start adrs
+            currentLimit=limit+PSize; // end adrs 
+            Memory[i]= new Partition(PSize,(currentbase+1),currentLimit);
+            limit=currentLimit ; 
+
+        }
+        
+
+// allocation strategy display a menu(only once) asking  user to choose the algorithm then allocate accordingly 
+boolean choosen = false ; 
+while (!choosen) {
+   System.out.println("Please choose an allocation strategy (F for First Fit, B for Best Fit, W for Worst Fit): ");
+   String mthd =scanner.next().toUpperCase();
+   strategy = mthd.charAt(0);
+   
+
+
+   if (strategy=='F' || strategy=='W' || strategy=='B')
+   choosen = true ; 
+   else
+   System.out.print("Invalid input ");
+
+}
+        try {
+
+        // Displaying the menu 
+        do {
+            System.out.print("Enter your choice: \n");
+            System.out.println("----- Memory Manager Menu -----");
+            System.out.println("1. Allocate Memory");
+            System.out.println("2. Deallocate Memory");
+            System.out.println("3. Generate Report and Write to File");
+            System.out.println("4. Exit Program\n");
+            choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    allocateMemory();
+                    break;
+                case 2:
+                    deallocateMemory();
+                    break;
+                case 3:
+                    generateReport();
+                    break;
+                case 4:
+                    System.out.println("Exiting the program...");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+            System.out.println();
+        } while (choice != 4);
+        }catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter an integer.");
+        }
+        
+    }  
+    
+    
+    
+    //============================================================
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // allocate 
+    private static void allocateMemory() {
+        
+                Scanner scanner = new Scanner(System.in);
+
+
+        if(ISfull())
+        return;
+ 
+         System.out.println("Enter Size of the process to allocate");
+         int processSize= scanner.nextInt();
+         String processId = "P"+(++lastProcid)+"";
+ 
+ // varibles for 2nd and 3rd fit 
+         int bestLOC=-1; //index of array
+         int worstLOC=-1;//index of array
+         int sizeBEST=-1;
+         int sizeWORST=-1;
+ 
+         boolean noFIT=true; // To check if there is block where process size < partition size
+ 
+         switch (strategy) {
+             case 'F': //firstfit
+                for(int i=0; i<Memory.length; i++ )
+                 if(Memory[i].getStatus()== Status.free && Memory[i].getPartitionSize()>= processSize){
+                     Memory[i].setInFragSize((Memory[i].getPartitionSize()-processSize));
+                     Memory[i].setStatus(Status.allocated);
+                     Memory[i].setProcId(processId);
+                     noFIT =false;
+                     break;
+                 }
+                 break;
+ 
+             case 'B'://bestfit
+             for(int i=0; i<Memory.length; i++ )
+                 if(Memory[i].getStatus()== Status.free && Memory[i].getPartitionSize()>= processSize){
+ // the first block is intitally is the best 
+                     if(bestLOC<0){ //first block fit
+                         bestLOC= i;
+                         sizeBEST= Memory[i].getPartitionSize();
+                     }
+ // check if Memory[i].partitionSize is better (smaller) than Memory[bestLOC].partitionSize
+ 
+                     if(bestLOC >=0 && Memory[i].getPartitionSize()<sizeBEST){
+                         bestLOC= i;
+                         sizeBEST= Memory[i].getPartitionSize();
+                     }
+                 }
+ 
+                // allocate
+                if(bestLOC >=0){// memory not full
+                Memory[bestLOC].setInFragSize((Memory[bestLOC].getPartitionSize()-processSize));
+                Memory[bestLOC].setStatus(Status.allocated);
+                Memory[bestLOC].setProcId(processId);
+                noFIT=false;
+                }
+                 break;
+ 
+             case 'W': //worstfit
+             for(int i=0; i<Memory.length; i++ )
+                 if(Memory[i].getStatus()== Status.free && Memory[i].getPartitionSize()>= processSize){
+ 
+                     if(worstLOC<0){ //first block fit
+                         worstLOC= i;
+                         sizeWORST= Memory[i].getPartitionSize();
+                     }
+ 
+                     if(worstLOC >=0 && Memory[i].getPartitionSize()>sizeWORST){
+                         worstLOC= i;
+                         sizeWORST= Memory[i].getPartitionSize();
+                     }
+                 }
+ 
+                // allocate
+                if(worstLOC >=0){
+                Memory[worstLOC].setInFragSize((Memory[worstLOC].getPartitionSize()-processSize));
+                Memory[worstLOC].setStatus(Status.allocated);
+                Memory[worstLOC].setProcId(processId);
+                noFIT=false;
+             }
+             break;
+ 
+             default:
+                 System.out.println("There is no strategy chosen.");
+         }
+         
+         if(noFIT)
+         System.out.println("There is no block in memory fit "+processId+".");
+         else 
+         System.out.println("The "+processId+" allocated successfully");
+         // anood and whoever resposible for this method veery important dont foget to check that there is enough memory space if not display an error msg 
+         // also when allocating dont forget to set the procId to the partition and internalfragmentsize=partitionSize-process size also set status to "allocated"
+         // display memory after allocation in this format [P6 | H | P9 | P7 ] by method printMemory()
+         printMemory();
+         // exeptions : memory is full , process size > partition size , process already allocated
+ 
+     }
+    
+    //----------------------------------------------------------------------------------------------------------
+    
+       private static boolean ISfull(){
+         boolean full=true;
+         for(int i=0; i<Memory.length; i++ ){
+         if(Memory[i].getStatus()== Status.free)
+         full=false;
+     }
+     if(full){
+     System.out.println("Memory is full.");
+     return true;}
+     else 
+     return false;
+ }
+       
+       //======================================================================================================
+
+ private static void printMemory(){
+     String str="";
+     str=str+"[ ";
+     for(int i=0; i<Memory.length; i++ ){
+         if(Memory[i].getStatus()== Status.free)
+         str=str+"H | ";
+         else
+         str=str+Memory[i].getProcId()+" | ";
+ }
+ int x=str.lastIndexOf('|');
+ String str1= str.substring(0,x);
+ str1=str1+"]";
+ System.out.println("Memory display: ");
+ System.out.println(str1);
+ }
+ //=============================================================================================================
+ 
+    private static void deallocateMemory() {
+         Scanner scanner = new Scanner(System.in);
+
+ 
+ 
+         boolean isEmpty = true;
+            int i;
+ 
+           for(i=0 ; i <Memory.length ; i++){
+           
+           if (Memory[i].getStatus()==Status.allocated){
+         isEmpty=false;
+         break;
+ 
+           }
+           
+                   
+           }
+ 
+ 
+           if (isEmpty) {
+             System.out.println("The memory is empty.");
+            return ; 
+         }
+ 
+         boolean found = false ; 
+ 
+                 try {
+ 
+             System.out.println("Enter the process ID: ");
+             String procId = scanner.nextLine();
+         
+ int j ; 
+             for( j=0  ; j <Memory.length ; j++){
+ 
+                 if(Memory[j].getProcId()!= null && Memory[j].getProcId().equalsIgnoreCase(procId)){
+ 
+                    Memory[j].setStatus(Status.free) ;
+                    
+                    Memory[j].setInFragSize(-1); 
+                    Memory[j].setProcId(null);
+ 
+                      System.out.println("Process ID;"+procId+" Successfully deallocateded");
+                     found=true ; 
+                     printMemory();
+                             
+ 
+                 }
+       
+ 
+ 
+             } // looped over all memory 
+ 
+             if ( found == false )
+             System.out.println("Process ID :"+procId+" Not found");
+             return ;
+ 
+         }
+                 catch (Exception e) {
+             System.out.println("Invalid input. Please try again.");
+             // Clear the invalid input from the scanner buffer
+//             scanner.nextLine();
+             return ;
+         }
+         
+          
+ 
+         // first loop over memory to check that it is not empty 
+         //if not ask user to enter process id 
+         // loop to find the desired partittion
+         // set the following status=free , inFragSize=-1 , procId=null ;  
+         //display sucess msg
+     }
+    
+    //=========================================================================================================================
+ 
+
+    
+private static void generateReport() {
+
+        //write into file 
+        try {
+            FileWriter writer = new FileWriter("Report.txt");
+            
+            for (int i = 0 ; i<Memory.length ; i++){
+            writer.write("partition"+(i+1)+"\n");
+            writer.write(Memory[i].toString()+"\n");
+            }
+            writer.close();
+            System.out.println("Memory report generated and written to 'Report.txt'.");
+
+        } catch (IOException e) {
+            System.out.println("Error occurred while writing to the file.");
+        }
+
+        //display on console 
+        System.out.println("-----------------------------------------------------------");
+        System.out.println("Memory Information");
+        for (int i = 0 ; i<Memory.length ; i++){
+            System.out.println("partition"+(i+1)+""); 
+
+            System.out.println(Memory[i].toString());
+            System.out.println("-----------------------------------------------------------");
+
+        }
+
+    }
+
+    //=================================================================================================================
+
+} // end class  
+
+
+
+
